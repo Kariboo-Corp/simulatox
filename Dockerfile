@@ -56,8 +56,6 @@ RUN apt-get install -y \
     pyros-genmsg \
     jsonschema \
     future
-    future
-
 
 
 # Installer PX4
