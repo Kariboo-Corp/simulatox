@@ -55,7 +55,8 @@ RUN apt-get install -y \
     symforce \
     pyros-genmsg \
     jsonschema \
-    future  
+    future
+
 
 # Installer PX4
 RUN git clone https://github.com/PX4/PX4-Autopilot.git && \
@@ -64,6 +65,26 @@ RUN git clone https://github.com/PX4/PX4-Autopilot.git && \
 # Définir l'environnement pour PX4
 ENV PX4_HOME_LAT 47.3765
 ENV PX4_HOME_LON 8.5488
+
+#Installation d'un text editor
+RUN apt-get install -y \
+    vim \
+    nano
+    
+RUN pip install --quiet --no-input PEXPECT
+
+RUN git clone https://github.com/eProsima/Micro-XRCE-DDS-Agent.git && \
+    cd Micro-XRCE-DDS-Agent && \
+    mkdir build && \
+    cd build && \
+    cmake .. && \
+    make && \
+    make install && \
+    ldconfig /usr/local/lib/
+
+RUN apt-get install -y \
+    python3-rosdep \
+    python3-colcon-common-extensions
 
 # Exécuter Gazebo avec PX4
 #CMD ["bash", "-c", "source /PX4-Autopilot/Tools/setup_gazebo.bash /PX4-Autopilot /PX4-Autopilot/build/px4_sitl_default && roslaunch px4 posix_sitl.launch"]
