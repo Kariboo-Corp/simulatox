@@ -81,6 +81,10 @@ RUN git clone https://github.com/eProsima/Micro-XRCE-DDS-Agent.git && \
     make install && \
     ldconfig /usr/local/lib/
 
+RUN apt-get install -y \
+    python3-rosdep \
+    python3-colcon-common-extensions
+
 # Exécuter Gazebo avec PX4
 #CMD ["bash", "-c", "source /PX4-Autopilot/Tools/setup_gazebo.bash /PX4-Autopilot /PX4-Autopilot/build/px4_sitl_default && roslaunch px4 posix_sitl.launch"]
 
