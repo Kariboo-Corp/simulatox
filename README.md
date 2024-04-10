@@ -176,7 +176,7 @@ For all containers, including stopped ones.
   ```bash
   ❯ docker ps -a
   ```
-
+  
 - **List Images**:
 To see all Docker images on your system.
 
