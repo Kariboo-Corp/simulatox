@@ -107,7 +107,7 @@ To start a Docker container:
 1. **Run the Container**: Use the `docker run` command to start the container with specific options:
 
    ```bash
-   docker run -d -it --rm -e DISPLAY=$DISPLAY -v /tmp/.X11-unix:/tmp/.X11-unix --device=/dev/dri:/dev/dri -v ./src:/PROJECT --name my_container pfa
+   sudo docker run -d -it --rm -e DISPLAY=$DISPLAY -v /tmp/.X11-unix:/tmp/.X11-unix --device=/dev/dri:/dev/dri -v ./src:/PROJECT --name my_container pfa
    ```
 
    Here's a breakdown of this command:
