@@ -55,7 +55,11 @@ RUN apt-get install -y \
     symforce \
     pyros-genmsg \
     jsonschema \
-    future
+    future \
+    dash \
+    pandas \
+    dash-bootstrap-components
+    
 
 
 # Installer PX4
@@ -65,11 +69,6 @@ RUN git clone https://github.com/PX4/PX4-Autopilot.git && \
 # Définir l'environnement pour PX4
 ENV PX4_HOME_LAT 47.3765
 ENV PX4_HOME_LON 8.5488
-
-#Installation d'un text editor
-RUN apt-get install -y \
-    vim \
-    nano
     
 RUN pip install --quiet --no-input PEXPECT
 
@@ -103,3 +102,6 @@ RUN mkdir -p /PX4-Autopilot/px4_packages/src &&\
 RUN useradd -r -p $(openssl passwd -1 1234) dev
 RUN usermod -aG sudo dev
 USER dev
+
+#Port d'exposition pour le server web
+EXPOSE 8000
