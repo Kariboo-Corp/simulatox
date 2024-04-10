@@ -109,6 +109,7 @@ To start a Docker container:
    ```bash
    ❯ docker run -d -it --rm -e DISPLAY=$DISPLAY -v /tmp/.X11-unix:/tmp/.X11-unix --device=/dev/dri:/dev/dri -v ./src:/PROJECT --name my_container pfa
    ```
+
    Here's a breakdown of this command:
 
    - `-d`: Runs the container in **detached mode**, meaning it runs in the background.
@@ -165,20 +166,20 @@ When you’re done, you can stop the container:
 To keep track of your containers and images, you can list them using the following commands:
 
 - **List Containers**:
-For active containers.
+  For active containers.
 
   ```bash
   ❯ docker ps
   ```
 
-For all containers, including stopped ones.
+  For all containers, including stopped ones.
 
   ```bash
   ❯ docker ps -a
   ```
-  
+
 - **List Images**:
-To see all Docker images on your system.
+  To see all Docker images on your system.
 
   ```bash
   ❯ docker images
