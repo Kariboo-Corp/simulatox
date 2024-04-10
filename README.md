@@ -17,13 +17,13 @@ This will provide you with all the necessary files, including the Dockerfile and
    Example:
 
    ```bash
-   ❯ cd path/to/your/directory
+   cd path/to/your/directory
    ```
 
 3. **Clone the Repository**: Run the following git command to clone the repository:
 
    ```bash
-   ❯ git clone https://github.com/Kariboo-Corp/simulatox.git
+   git clone https://github.com/Kariboo-Corp/simulatox.git
    ```
 
    This command will create a folder named `simulatox` in your current directory and download the contents of the repository into it.
@@ -31,7 +31,7 @@ This will provide you with all the necessary files, including the Dockerfile and
 4. **Navigate to the Repository Directory**: After cloning, move into the repository directory:
 
    ```bash
-   ❯ cd simulatox
+   cd simulatox
    ```
 
 Now that you have the repository cloned, you can proceed with the Docker setup as per the following sections.
@@ -48,7 +48,7 @@ This guide provides instructions on setting up Docker and running a container fo
 - **Check Docker Service Status**
 
   ```bash
-  ❯ systemctl status docker
+  systemctl status docker
   ```
 
   This command checks the current status of the Docker service.
@@ -56,14 +56,14 @@ This guide provides instructions on setting up Docker and running a container fo
 - **Start Docker Service**
 
   ```bash
-  ❯ sudo systemctl start docker
+  sudo systemctl start docker
   ```
 
   Use this command to start the Docker service if it is not running.
 
 - **Enable Docker Service on Boot**
   ```bash
-  ❯ sudo systemctl enable docker
+  sudo systemctl enable docker
   ```
   This will configure Docker to start automatically at system boot.
 
@@ -76,14 +76,14 @@ creating a Docker image from the Dockerfile in the repository, which contains al
    This is where the Dockerfile should be located.
 
    ```bash
-   ❯ cd path/to/simulatox
+   cd path/to/simulatox
    ```
 
 2. **Build the Docker Image**: Use the following command to build the Docker image.
    This command creates an image with the tag `pfa`, using the Dockerfile in the current directory (`.`).
 
    ```bash
-   ❯ sudo docker image build . -t pfa
+   sudo docker image build . -t pfa
    ```
 
    - `sudo`: Runs the command with superuser privileges.
@@ -94,7 +94,7 @@ creating a Docker image from the Dockerfile in the repository, which contains al
 3. **Allow X11 Connections**: If your application requires a GUI and uses the host's X11 server, run the following command:
 
    ```bash
-   ❯ xhost +
+   xhost +
    ```
 
    This command configures the X server to allow connections from any client.
@@ -107,7 +107,7 @@ To start a Docker container:
 1. **Run the Container**: Use the `docker run` command to start the container with specific options:
 
    ```bash
-   ❯ docker run -d -it --rm -e DISPLAY=$DISPLAY -v /tmp/.X11-unix:/tmp/.X11-unix --device=/dev/dri:/dev/dri -v ./src:/PROJECT --name my_container pfa
+   docker run -d -it --rm -e DISPLAY=$DISPLAY -v /tmp/.X11-unix:/tmp/.X11-unix --device=/dev/dri:/dev/dri -v ./src:/PROJECT --name my_container pfa
    ```
 
    Here's a breakdown of this command:
@@ -148,7 +148,7 @@ To interact with a running container:
 - **Accessing the Shell**: If you need to enter the container’s shell (bash), use the `docker exec` command:
 
   ```bash
-  ❯ docker exec -it my_container /bin/bash
+  docker exec -it my_container /bin/bash
   ```
 
 ### Stopping the Container
@@ -158,7 +158,7 @@ When you’re done, you can stop the container:
 - **Stop the Container**: Use the `docker stop` command:
 
   ```bash
-  ❯ docker stop my_container
+  docker stop my_container
   ```
 
 ### Listing Containers and Images
@@ -169,20 +169,20 @@ To keep track of your containers and images, you can list them using the followi
   For active containers:
 
   ```bash
-  ❯ docker ps
+  docker ps
   ```
 
   For all containers, including stopped ones:
 
   ```bash
-  ❯ docker ps -a
+  docker ps -a
   ```
 
 - **List Images**:
   To see all Docker images on your system:
 
   ```bash
-  ❯ docker images
+  docker images
   ```
 
 ## Cleaning
@@ -192,7 +192,7 @@ To keep track of your containers and images, you can list them using the followi
 After stopping a container, you can remove it to free up disk space:
 
     ```bash
-    ❯ docker rm [CONTAINER_ID or CONTAINER_NAME]
+    docker rm [CONTAINER_ID or CONTAINER_NAME]
     ```
 
 Replace `[CONTAINER_ID or CONTAINER_NAME]` with the ID or name of your container. Find this information by using `docker ps -a`.
@@ -202,7 +202,7 @@ Replace `[CONTAINER_ID or CONTAINER_NAME]` with the ID or name of your container
 Docker images can occupy a significant amount of disk space. To remove an unused image:
 
     ```bash
-    ❯ docker rmi [IMAGE_ID or IMAGE_NAME]
+    docker rmi [IMAGE_ID or IMAGE_NAME]
     ```
 
 Replace `[IMAGE_ID or IMAGE_NAME]` with the ID or name of the image. Use `docker images` to view all available images.
@@ -212,13 +212,13 @@ Replace `[IMAGE_ID or IMAGE_NAME]` with the ID or name of the image. Use `docker
 Docker provides a handy command to remove unused containers, networks, volumes, and images:
 
     ```bash
-    ❯ docker system prune
+    docker system prune
     ```
 
 This command will remove all unused resources. To also include unused images, use: 
 
      ```bash
-    ❯ docker system prune -a
+    docker system prune -a
     ```
 
 
@@ -228,6 +228,6 @@ This command will remove all unused resources. To also include unused images, us
     Volumes not attached to any containers can also occupy space. To remove them:
 
     ```bash
-    ❯ docker volume prune
+    docker volume prune
     ```
 
