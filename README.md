@@ -217,11 +217,9 @@ Docker provides a handy command to remove unused containers, networks, volumes, 
 
 This command will remove all unused resources. To also include unused images, use: 
 
-     ```bash
+    ```bash
     docker system prune -a
     ```
-
-
 
 ### Managing Orphaned Volumes
 
@@ -231,3 +229,12 @@ This command will remove all unused resources. To also include unused images, us
     docker volume prune
     ```
 
+### Global Cleanup:
+For a more comprehensive cleanup, including stopped containers, unused images, orphaned volumes, and unused networks:
+
+    ```bash
+    docker system prune -a
+    ```
+This command will thoroughly clean up your Docker environment. It removes all stopped containers, unused images (both dangling and unreferenced by any container), unused volumes, and networks not used by at least one container. 
+
+Remember, using this command might result in data loss if any important information is stored in these containers or images. Make sure to back up any necessary data before proceeding.
