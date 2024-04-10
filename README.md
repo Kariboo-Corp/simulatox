@@ -166,20 +166,20 @@ When you’re done, you can stop the container:
 To keep track of your containers and images, you can list them using the following commands:
 
 - **List Containers**:
-  For active containers.
+  For active containers:
 
   ```bash
   ❯ docker ps
   ```
 
-  For all containers, including stopped ones.
+  For all containers, including stopped ones:
 
   ```bash
   ❯ docker ps -a
   ```
 
 - **List Images**:
-  To see all Docker images on your system.
+  To see all Docker images on your system:
 
   ```bash
   ❯ docker images
@@ -215,7 +215,13 @@ Docker provides a handy command to remove unused containers, networks, volumes, 
     ❯ docker system prune
     ```
 
-This command will remove all unused resources. To also include unused images, use `docker system prune -a`.
+This command will remove all unused resources. To also include unused images, use: 
+
+     ```bash
+    ❯ docker system prune -a
+    ```
+
+
 
 ### Managing Orphaned Volumes
 
