@@ -148,7 +148,7 @@ To interact with a running container:
 - **Accessing the Shell**: If you need to enter the container’s shell (bash), use the `docker exec` command:
 
   ```bash
-  docker exec -it my_container /bin/bash
+  sudo docker exec -it my_container /bin/bash
   ```
 
 ### Stopping the Container
@@ -158,7 +158,7 @@ When you’re done, you can stop the container:
 - **Stop the Container**: Use the `docker stop` command:
 
   ```bash
-  docker stop my_container
+  sudo docker stop my_container
   ```
 
 ### Listing Containers and Images
