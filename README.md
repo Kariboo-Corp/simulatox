@@ -194,7 +194,8 @@ After stopping a container, you can remove it to free up disk space:
     ```bash
     ❯ docker rm [CONTAINER_ID or CONTAINER_NAME]
     ```
-    - Replace `[CONTAINER_ID or CONTAINER_NAME]` with the ID or name of your container. Find this information by using `docker ps -a`.
+
+Replace `[CONTAINER_ID or CONTAINER_NAME]` with the ID or name of your container. Find this information by using `docker ps -a`.
 
 ### Removing Unused Images
 
@@ -203,7 +204,8 @@ Docker images can occupy a significant amount of disk space. To remove an unused
     ```bash
     ❯ docker rmi [IMAGE_ID or IMAGE_NAME]
     ```
-    - Replace `[IMAGE_ID or IMAGE_NAME]` with the ID or name of the image. Use `docker images` to view all available images.
+
+Replace `[IMAGE_ID or IMAGE_NAME]` with the ID or name of the image. Use `docker images` to view all available images.
 
 ### Automatically Cleaning Up Unused Resources
 
@@ -212,7 +214,8 @@ Docker provides a handy command to remove unused containers, networks, volumes, 
     ```bash
     ❯ docker system prune
     ```
-    - This command will remove all unused resources. To also include unused images, use `docker system prune -a`.
+
+This command will remove all unused resources. To also include unused images, use `docker system prune -a`.
 
 ### Managing Orphaned Volumes
 
