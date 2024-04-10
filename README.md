@@ -1,5 +1,3 @@
-# PFA
-
 # Project Setup Guide
 
 This guide covers the necessary steps for setting up the project environment using Docker.
