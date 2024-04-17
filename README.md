@@ -202,9 +202,9 @@ Replace `[CONTAINER_ID or CONTAINER_NAME]` with the ID or name of your container
 
 Docker images can occupy a significant amount of disk space. To remove an unused image:
 
-    ```bash
-    docker rm [CONTAINER_ID or CONTAINER_NAME]
-    ```
+  ```bash
+  docker rm [CONTAINER_ID or CONTAINER_NAME]
+  ```
 
 Replace `[IMAGE_ID or IMAGE_NAME]` with the ID or name of the image. Use `docker images` to view all available images.
 
@@ -212,31 +212,31 @@ Replace `[IMAGE_ID or IMAGE_NAME]` with the ID or name of the image. Use `docker
 
 Docker provides a handy command to remove unused containers, networks, volumes, and images:
 
-    ```bash
-    docker system prune
-    ```
+  ```bash
+  docker system prune
+  ```
     
 
 This command will remove all unused resources. To also include unused images, use: 
 
-    ```bash
-    docker system prune -a
-    ```
+  ```bash
+  docker system prune -a
+  ```
 
 ### Managing Orphaned Volumes
 
-    Volumes not attached to any containers can also occupy space. To remove them:
+Volumes not attached to any containers can also occupy space. To remove them:
 
-    ```bash
-    docker volume prune
-    ```
+  ```bash
+  docker volume prune
+  ```
 
 ### Global Cleanup:
 For a more comprehensive cleanup, including stopped containers, unused images, orphaned volumes, and unused networks:
 
-    ```bash
-    docker system prune -a
-    ```
+  ```bash
+  docker system prune -a
+  ```
     
 This command will thoroughly clean up your Docker environment. It removes all stopped containers, unused images (both dangling and unreferenced by any container), unused volumes, and networks not used by at least one container. 
 
