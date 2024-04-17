@@ -72,6 +72,7 @@ ENV PX4_HOME_LON 8.5488
     
 RUN pip install --quiet --no-input PEXPECT
 
+#Installer Micro XRCE-DDS Agent
 RUN git clone https://github.com/eProsima/Micro-XRCE-DDS-Agent.git && \
     cd Micro-XRCE-DDS-Agent && \
     mkdir build && \
@@ -81,11 +82,26 @@ RUN git clone https://github.com/eProsima/Micro-XRCE-DDS-Agent.git && \
     make install && \
     ldconfig /usr/local/lib/
 
+#Installer Rosdep et Colcon
 RUN apt-get install -y \
     python3-rosdep \
     python3-colcon-common-extensions
 
-# Exécuter Gazebo avec PX4
-#CMD ["bash", "-c", "source /PX4-Autopilot/Tools/setup_gazebo.bash /PX4-Autopilot /PX4-Autopilot/build/px4_sitl_default && roslaunch px4 posix_sitl.launch"]
+#Utiliser bash au lieu de sh
+RUN rm /bin/sh && ln -s /bin/bash /bin/sh
 
+#Installer et compiller px4_msgs
+RUN mkdir -p /PX4-Autopilot/px4_packages/src &&\
+    cd /PX4-Autopilot/px4_packages && \
+    git clone https://github.com/PX4/px4_msgs.git && \
+    cd /PX4-Autopilot/px4_packages && \
+    source /opt/ros/humble/setup.bash && \
+    colcon build
+
+#Ajout de l'utilisateur dev
+RUN useradd -r -p $(openssl passwd -1 1234) dev
+RUN usermod -aG sudo dev
+USER dev
+
+#Port d'exposition pour le server web
 EXPOSE 8000
