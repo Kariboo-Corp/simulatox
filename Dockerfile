@@ -46,7 +46,6 @@ apt-get update && \
 apt-get install gz-harmonic -y
 
 
-
 #Installer dernière dépendance
 
 RUN apt-get install -y \
@@ -69,7 +68,11 @@ RUN git clone https://github.com/PX4/PX4-Autopilot.git && \
 # Définir l'environnement pour PX4
 ENV PX4_HOME_LAT 47.3765
 ENV PX4_HOME_LON 8.5488
-    
+
+#Installation d'un text editor
+RUN apt-get install -y \
+    nano
+
 RUN pip install --quiet --no-input PEXPECT
 
 RUN git clone https://github.com/eProsima/Micro-XRCE-DDS-Agent.git && \
@@ -81,11 +84,32 @@ RUN git clone https://github.com/eProsima/Micro-XRCE-DDS-Agent.git && \
     make install && \
     ldconfig /usr/local/lib/
 
+#Installer Rosdep et Colcon
 RUN apt-get install -y \
     python3-rosdep \
     python3-colcon-common-extensions
 
-# Exécuter Gazebo avec PX4
-#CMD ["bash", "-c", "source /PX4-Autopilot/Tools/setup_gazebo.bash /PX4-Autopilot /PX4-Autopilot/build/px4_sitl_default && roslaunch px4 posix_sitl.launch"]
+#Utiliser bash au lieu de sh
+RUN rm /bin/sh && ln -s /bin/bash /bin/sh
+
+#Installer et compiller px4_msgs
+RUN mkdir -p /PX4-Autopilot/px4_packages/src &&\
+    cd /PX4-Autopilot/px4_packages && \
+    git clone https://github.com/PX4/px4_msgs.git && \
+    cd /PX4-Autopilot/px4_packages && \
+    source /opt/ros/humble/setup.bash && \
+    colcon build
+
+#Installer gz-transport
+# RUN apt-get remove libgz-transport.*-dev -y
+# # RUN apt-get install git cmake pkg-config python ruby-ronn libprotoc-dev libprotobuf-dev protobuf-compiler uuid-dev libzmq3-dev libgz-msgs10-dev libgz-utils2-cli-dev
+# RUN git clone https://github.com/gazebosim/gz-transport
+# RUN cd gz-transport && \
+#     mkdir build && \
+#     cd build && \
+#     cmake .. && \
+#     make
+
 
 EXPOSE 8000
+EXPOSE 11345
