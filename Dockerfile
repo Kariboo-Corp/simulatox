@@ -75,6 +75,7 @@ RUN apt-get install -y \
 
 RUN pip install --quiet --no-input PEXPECT
 
+#Installer Micro XRCE-DDS Agent
 RUN git clone https://github.com/eProsima/Micro-XRCE-DDS-Agent.git && \
     cd Micro-XRCE-DDS-Agent && \
     mkdir build && \
