@@ -3,16 +3,19 @@
 import rclpy
 from rclpy.node import Node
 from rclpy.qos import QoSProfile, ReliabilityPolicy, HistoryPolicy, DurabilityPolicy
-from px4_msgs.msg import OffboardControlMode, TrajectorySetpoint, VehicleCommand, VehicleLocalPosition, VehicleStatus
-import sys
+from px4_msgs.msg import OffboardControlMode, TrajectorySetpoint, VehicleCommand, VehicleLocalPosition, VehicleStatus, VehicleGlobalPosition
+from rclpy.executors import MultiThreadedExecutor
+import threading
 
-x, y, z, id = 0., 10., 0., 1
+x, y, z = 0., 10., 0.
+dx, dy, dz = 0., 10., 0.
+stop_flag = False
 
 class OffboardControl(Node):
     """Node for controlling a vehicle in offboard mode."""
 
-    def __init__(self) -> None:
-        global id
+    def __init__(self, id) -> None:
+        global x, y, z
         super().__init__('offboard_control_takeoff_and_land')
         print("id : ",id," x: ",x," y: ",y," z: ",z)
 
@@ -23,7 +26,10 @@ class OffboardControl(Node):
             history=HistoryPolicy.KEEP_LAST,
             depth=1
         )
-
+        self.setpointx = 0.
+        self.setpointy = 0.
+        self.setpointz = 0.
+        self.id = id
         # Create publishers
         self.offboard_control_mode_publisher = self.create_publisher(
             OffboardControlMode, '/px4_'+str(id)+'/fmu/in/offboard_control_mode', qos_profile)
@@ -37,12 +43,15 @@ class OffboardControl(Node):
             VehicleLocalPosition, '/px4_'+str(id)+'/fmu/out/vehicle_local_position', self.vehicle_local_position_callback, qos_profile)
         self.vehicle_status_subscriber = self.create_subscription(
             VehicleStatus, '/px4_'+str(id)+'/fmu/out/vehicle_status', self.vehicle_status_callback, qos_profile)
+        self.vehicle_global_position_subscriber = self.create_subscription(
+            VehicleGlobalPosition, '/px4_'+str(id)+'/fmu/out/vehicle_global_position', self.vehicle_global_position_callback, qos_profile)
 
         # Initialize variables
         self.offboard_setpoint_counter = 0
         self.vehicle_local_position = VehicleLocalPosition()
         self.vehicle_status = VehicleStatus()
         self.takeoff_height = -5.
+        self.vehicle_global_position = VehicleGlobalPosition()
 
         # Create a timer to publish control commands
         self.timer = self.create_timer(0.1, self.timer_callback)
@@ -54,6 +63,9 @@ class OffboardControl(Node):
     def vehicle_status_callback(self, vehicle_status):
         """Callback function for vehicle_status topic subscriber."""
         self.vehicle_status = vehicle_status
+
+    def vehicle_global_position_callback(self, vehicle_global_position):
+        self.vehicle_global_position = vehicle_global_position
 
     def arm(self):
         """Send an arm command to the vehicle."""
@@ -100,7 +112,6 @@ class OffboardControl(Node):
 
     def publish_vehicle_command(self, command, **params) -> None:
         """Publish a vehicle command."""
-        global id
         msg = VehicleCommand()
         msg.command = command
         msg.param1 = params.get("param1", 0.0)
@@ -110,7 +121,7 @@ class OffboardControl(Node):
         msg.param5 = params.get("param5", 0.0)
         msg.param6 = params.get("param6", 0.0)
         msg.param7 = params.get("param7", 0.0)
-        msg.target_system = id + 1
+        msg.target_system = self.id + 1
         msg.target_component = 1
         msg.source_system = 1
         msg.source_component = 1
@@ -118,8 +129,18 @@ class OffboardControl(Node):
         msg.timestamp = int(self.get_clock().now().nanoseconds / 1000)
         self.vehicle_command_publisher.publish(msg)
 
+    def moveto(self, x, y, z):
+        self.setpointx, self.setpointy, self.setpointz = float(x), float(y), float(z)
+        self.timer = self.create_timer(0.1, self.timer_callback)
+
+    def local_pos(self):
+        return [self.vehicle_local_position.x, self.vehicle_local_position.y, self.vehicle_local_position.z]
+
+    def global_pos(self):
+        return [self.vehicle_global_position.lat, self.vehicle_global_position.alt, self.vehicle_global_position.lon]
+
+
     def timer_callback(self) -> None:
-        global x, y, z
         """Callback function for the timer."""
         self.publish_offboard_control_heartbeat_signal()
 
@@ -127,32 +148,76 @@ class OffboardControl(Node):
             self.engage_offboard_mode()
             self.arm()
 
-        if self.vehicle_local_position.z > self.takeoff_height and self.vehicle_status.nav_state == VehicleStatus.NAVIGATION_STATE_OFFBOARD:
-            self.publish_position_setpoint(x, z, -y)
-
-        #elif self.vehicle_local_position.z <= self.takeoff_height:
-            #self.land()
-            #exit(0)
+        if self.vehicle_status.nav_state == VehicleStatus.NAVIGATION_STATE_OFFBOARD:
+            self.publish_position_setpoint(self.setpointx, self.setpointz, -self.setpointy)
 
         if self.offboard_setpoint_counter < 11:
             self.offboard_setpoint_counter += 1
 
+#Create an executor and an array of "number" nodes ,starts the executor and return the array of nodes
+def drone_init(number):
+    global executor, thread
+    executor = MultiThreadedExecutor()
 
-def run(xin,yin,zin,idin) -> None:
-    global x, y, z, id
-    print('Starting offboard control node...')
+    nodes = []
+    for i in range(1, number+1):
+        node = OffboardControl(i)
+        executor.add_node(node)
+        nodes.append(node)
 
-    id = int(idin)
-    x = float(xin)
-    y = float(yin)
-    z = float(zin)
+    # Create a thread to spin the executor
+    thread = threading.Thread(target=executor_callback, daemon=True)
+    thread.start()
+    return nodes
 
-    print("id : ",id," x: ",x," y: ",y," z: ",z)
+#Wrapper to be able to quickly stop the thread
+def executor_callback():
+    global stop_flag, executor
+    while not stop_flag:
+        executor.spin_once()
+    print(stop_flag)
 
-    rclpy.init()
-    offboard_control = OffboardControl()
-    rclpy.spin(offboard_control)
-    offboard_control.destroy_node()
-    rclpy.shutdown()
+#Restart the executor, needs to be done when modifying any attribute of a drone
+def executor_restart():
+    global executor, thread, stop_flag
+    stop_flag = True
+    thread.join()
+    stop_flag = False
 
+    thread = threading.Thread(target=executor_callback, daemon=True)
+    thread.start()
+
+#End the executor, stops all drones
+def drone_clean():
+    global executor
+    executor.shutdown()
+
+#move all drones within the nodes array to (x, y, z) in local coordinate system
+def move_all_drones(nodes, x, y, z):
+    for node in nodes:
+        node.moveto(x, y, z)
+    executor_restart()
+
+def move_drones(nodes, coords):
+    for node, coord in zip(nodes, coords):
+        node.moveto(coord[0], coord[1], coord[2])
+    executor_restart()
+
+#Return the global position of all drones within the nodes array
+def get_all_global_pos(nodes):
+    positions = []
+    for node in nodes:
+        position = node.global_pos()
+        positions.append(position)
+
+    return positions
+
+#Return the local position of all drones within the nodes array
+def get_all_local_pos(nodes):
+    positions = []
+    for node in nodes:
+        position = node.local_pos()
+        positions.append(position)
+
+    return positions
 
