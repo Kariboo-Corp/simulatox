@@ -101,16 +101,7 @@ RUN mkdir -p /PX4-Autopilot/px4_packages/src &&\
     source /opt/ros/humble/setup.bash && \
     colcon build
 
-#Installer gz-transport
-# RUN apt-get remove libgz-transport.*-dev -y
-# # RUN apt-get install git cmake pkg-config python ruby-ronn libprotoc-dev libprotobuf-dev protobuf-compiler uuid-dev libzmq3-dev libgz-msgs10-dev libgz-utils2-cli-dev
-# RUN git clone https://github.com/gazebosim/gz-transport
-# RUN cd gz-transport && \
-#     mkdir build && \
-#     cd build && \
-#     cmake .. && \
-#     make
-
+RUN echo "source /PX4-Autopilot/px4_packages/install/local_setup.bash" >> ~/.bashrc
 
 EXPOSE 8000
 EXPOSE 11345
