@@ -32,4 +32,7 @@ def init_drone(drone_number):
     return c.drone_init(drone_number)
 
 def clean_drone():
-    c.drone_clean()
+    try:
+        c.drone_clean()
+    except:
+        print("Executor already shutdown")

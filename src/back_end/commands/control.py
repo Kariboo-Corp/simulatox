@@ -170,6 +170,7 @@ def drone_init(number):
     thread.start()
     return nodes
 
+
 #Wrapper to be able to quickly stop the thread
 def executor_callback():
     global stop_flag, executor

@@ -119,6 +119,25 @@ def setup(app : d.Dash):
 
     ################MOVE DRONE################
 
+
+    ################ARM ALL DRONE################
+    ##Set Button Card
+    @app.callback(
+        d.Output("arm_all", "n_clicks"),
+        [d.Input("arm_all", "n_clicks")],
+        prevent_initial_call=True
+    )
+    def arm_all_drone(n_clicks):
+        global drones
+        if len(drones)==0:
+            drones  = g.init_drone(drone_number)
+        print("Arm All Drone")
+        job = threading.Thread(target=commander.arm_all_drones, args=(drones,))
+        job.start()
+        return n_clicks
+
+
+
     ################DRONE LIST################
     ##Set Drone List
     @app.callback(
@@ -131,3 +150,4 @@ def setup(app : d.Dash):
         for key in data:
             drone_list.append(m.makeDroneCard(key, data[key]))
         return drone_list
+    ################DRONE LIST################
